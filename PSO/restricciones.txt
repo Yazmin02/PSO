@@ -1,0 +1,80 @@
+def apply_DEB_constraints(self, particle):
+        # Restricciones basadas en las reglas DEB
+        SVR = self.calculate_SVR(particle)
+        if SVR == 0:
+            return  # No hay violación de restricciones, la solución es válida
+        
+        # Aplicar las reglas DEB para seleccionar las soluciones válidas
+        for i in range(len(self.bounds)):
+            if self.bounds[i, 0] <= particle.position[i] <= self.bounds[i, 1]:
+                # La posición está dentro de los límites, aplicar regla b)
+                return
+        # Si ninguna posición es válida, aplicar regla c)
+        if SVR < particle.best_value:  # Comparar con la mejor posición local
+            particle.best_value = SVR
+            particle.best_position = np.copy(particle.position)
+        if SVR < self.global_best_value:  # Comparar con la mejor posición global
+            self.global_best_value = SVR
+            self.global_best_position = np.copy(particle.position)
+
+    def calculate_SVR(self, particle):
+        # Calcular la suma de violación de restricciones (SVR)
+        SVR = 0
+        C1 = 1
+        C2 = 2
+        C3 = 3
+        C4 = 4
+        C5 = 5
+        C6 = 6
+        C7 = 7
+        C8 = 8
+        C9 = 9
+        C10 = 10
+        C11 = 11
+        C12 = 12
+        C13 = 13
+        C14 = 14
+        C15 = 15
+        C16 = 16
+        C17 = 17
+        C18 = 18
+        C19 = 19
+        C20 = 20
+        C21 = 21
+        C22 = 22
+        C23 = 23
+        C24 = 24
+        C25 = 25
+        C26 = 26
+        C27 = 27
+        C28 = 28
+        C29 = 29
+        C30 = 30
+        C31 = 31
+        C32 = 32
+        C33 = 33
+        C34 = 34
+        C35 = 35
+        C36 = 36
+        C37 = 37
+        C38 = 38
+        C39 = 39
+        C40 = 40
+        C41 = 41
+        C42 = 42
+        C43 = 43
+        # Restricciones del tipo: Cx <= d
+        SVR += max(0, C7 * particle.position[5]**2 + C8 * particle.position[-1] * particle.position[2] - C9 * particle.position[5] - 1)
+        SVR += max(0, C10 * particle.position[0] * particle.position[2]**(-1) + C11 * particle.position[2]**(-1) * particle.position[5] - C12 * particle.position[0] * particle.position[2]**(-1) * particle.position[5]**2 - 1)
+        SVR += max(0, C13 * particle.position[5]**2 + C14 * particle.position[4] - C15 * particle.position[3] - C16 * particle.position[5] - 1)
+        SVR += max(0, C17 * particle.position[4]**(-1) + C18 * particle.position[4]**(-1) * particle.position[5] + C19 * particle.position[3] * particle.position[4]**(-1) - C20 * particle.position[4]**(-1) * particle.position[5]**2 - 1)
+        SVR += max(0, C21 * particle.position[6] + C22 * particle.position[1] * particle.position[2]**(-1) * particle.position[3]**(-1) - C23 * particle.position[1] * particle.position[2]**(-1) - 1)
+        SVR += max(0, C24 * particle.position[6]**(-1) + C25 * particle.position[1] * particle.position[2]**(-1) * particle.position[6]**(-1) - C26 * particle.position[1] * particle.position[2]**(-1) * particle.position[3]**(-1) * particle.position[6]**(-1) - 1)
+        SVR += max(0, C27 * particle.position[4]**(-1) + C28 * particle.position[4]**(-1) * particle.position[6] - C29 * particle.position[6] - 1)
+        SVR += max(0, C30 * particle.position[4] - C31 * particle.position[6] - 1)
+        SVR += max(0, C32 * particle.position[2] - C33 * particle.position[1] - 1)
+        SVR += max(0, C34 * particle.position[0] * particle.position[2]**(-1) + C35 * particle.position[2]**(-1) - 1)
+        SVR += max(0, C36 * particle.position[1] * particle.position[2]**(-1) * particle.position[3]**(-1) - C37 * particle.position[1] * particle.position[2]**(-1) - 1)
+        SVR += max(0, C38 * particle.position[3] + C39 * particle.position[1] - C40 * particle.position[2] - 1)
+        SVR += max(0, C41 * particle.position[0] * particle.position[5] + C42 * particle.position[0] - C43 * particle.position[2] - 1)
+        return SVR
