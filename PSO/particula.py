@@ -10,3 +10,5 @@ class Particle:  # Definir una clase llamada Particle para representar una part�
         self.best_position = np.copy(self.position)
         # Inicializar el mejor valor (la mejor solución encontrada) de la partícula como infinito
         self.best_value = float('inf')
+
+

@@ -27,6 +27,7 @@ class enjambre:
                 new_position = np.clip(new_position, self.bounds[:, 0], self.bounds[:, 1])
                 particle.position = new_position
 
+
                 # Actualizar la mejor posición local de la partícula
                 if self.evaluate(new_position) < particle.best_value:
                     particle.best_position = np.copy(new_position)
@@ -36,6 +37,8 @@ class enjambre:
                 if particle.best_value < self.global_best_value:
                     self.global_best_value = particle.best_value
                     self.global_best_position = np.copy(particle.best_position)
+                    
+
 
     def evaluate(self, position):
         # Coeficientes de la función objetivo
@@ -54,23 +57,31 @@ class enjambre:
         SVR = self.calculate_SVR(particle)
         if SVR == 0:
             return  # No hay violación de restricciones, la solución es válida
-        
         # Aplicar las reglas DEB para seleccionar las soluciones válidas
+        violated = False
         for i in range(len(self.bounds)):
-            if self.bounds[i, 0] <= particle.position[i] <= self.bounds[i, 1]:
-                # La posición está dentro de los límites, aplicar regla b)
-                return
+         if particle.position[i] < self.bounds[i, 0]:
+            particle.position[i] = self.bounds[i, 0]
+            print(particle.position[0],particle.position[6])
+
+            violated = True
+         elif particle.position[i] > self.bounds[i, 1]:
+            particle.position[i] = self.bounds[i, 1]
+            violated = True
+        if violated:
+            SVR = self.calculate_SVR(particle)  # Recalcular SVR después del ajuste de posición
+
         # Si ninguna posición es válida, aplicar regla c)
         if SVR < particle.best_value:  # Comparar con la mejor posición local
             particle.best_value = SVR
             particle.best_position = np.copy(particle.position)
         if SVR < self.global_best_value:  # Comparar con la mejor posición global
             self.global_best_value = SVR
-            self.global_best_position = np.copy(particle.position)
+            self.global_best_position = np.copy(particle.position[i])
 
     def calculate_SVR(self, particle):
         # Calcular la suma de violación de restricciones (SVR)
-        SVR = 0
+        SVR=0
         C7 = 0.59553571e-2
         C8 = 0.88392857
         C9 = 0.11756250
@@ -109,7 +120,7 @@ class enjambre:
         C42 = 1.22
         C43 = 1.0
         C44 = 1.0
-        # Restricciones del tipo: Cx <= d
+        # Restricciones del tipo: Cx <= d (desigualdad)
         SVR += max(0, C7 * particle.position[5]**2 + C8 * particle.position[0] **(-1)* particle.position[2] - C9 * particle.position[5] - 1)
         SVR += max(0, C10 * particle.position[0] * particle.position[2]**(-1) + C11 * particle.position[0] * particle.position[2]**(-1)* particle.position[5] - C12 * particle.position[0] * particle.position[2]**(-1) * particle.position[5]**2 - 1)
         SVR += max(0, C13 * particle.position[5]**2 + C14 * particle.position[4] - C15 * particle.position[3] - C16 * particle.position[5] - 1)

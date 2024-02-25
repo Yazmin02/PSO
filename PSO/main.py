@@ -11,11 +11,12 @@ bounds = np.array([[1500, 2000],
                    [90, 95],
                    [3, 12],
                    [145, 162]])
-max_iterations = 1000
+max_iterations = 100
 inertia =0.5
 c1 = 1.5
-c2 = 2
+c2 = 0.5
 pso = PSO(num_particles, num_dimensions, bounds, max_iterations, inertia, c1, c2)
 best_solution, best_value = pso.optimize()
 print("Mejor solución:", best_solution)
+
 print("Mejor valor:", best_value)
