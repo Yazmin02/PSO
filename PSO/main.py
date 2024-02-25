@@ -11,7 +11,7 @@ bounds = np.array([[1500, 2000],
                    [90, 95],
                    [3, 12],
                    [145, 162]])
-max_iterations = 100
+max_iterations = 1000
 inertia =0.5
 c1 = 1.5
 c2 = 2

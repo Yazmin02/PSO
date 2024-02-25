@@ -1,41 +1,53 @@
-import numpy as np
-from particula import Particle
+import numpy as np  # Importa la librería NumPy para operaciones numéricas eficientes
+from particula import Particle  # Importa la clase Particle del módulo particula
 
-class Swarm:
+class enjambre:
     def __init__(self, num_particles, num_dimensions, bounds):
+        # Inicializar las partículas del enjambre con posiciones aleatorias dentro de los límites
         self.particles = [Particle(num_dimensions, bounds) for _ in range(num_particles)]
+        # Almacenar los límites del espacio de búsqueda
         self.bounds = bounds
+        # Inicializar la mejor posición global como un arreglo de ceros
         self.global_best_position = np.zeros(num_dimensions)
+        # Inicializar el mejor valor global como infinito
         self.global_best_value = float('inf')
 
-    def update_particles(self, inertia, c1, c2, rand1, rand2, dt=1.0):
+    def update_particles(self, inertia, c1, c2, rand1, rand2):
+        # Iterar sobre cada partícula en el enjambre
         for particle in self.particles:
-            if particle.best_position is not None and particle.position is not None:
+            if particle.best_position is not None and particle.position is not None:  # Verificar que las posiciones sean válidas
+                # Actualizar la velocidad de la partícula
                 new_velocity = (inertia * particle.velocity +
                                 c1 * rand1 * (particle.best_position - particle.position) +
                                 c2 * rand2 * (self.global_best_position - particle.position))
-                new_position = particle.position + dt * new_velocity
+                
+                # Actualizar la posición de la partícula
+                new_position = particle.position + new_velocity
+                # Ajustar la posición dentro de los límites del espacio de búsqueda
                 new_position = np.clip(new_position, self.bounds[:, 0], self.bounds[:, 1])
                 particle.position = new_position
 
+                # Actualizar la mejor posición local de la partícula
                 if self.evaluate(new_position) < particle.best_value:
                     particle.best_position = np.copy(new_position)
                     particle.best_value = self.evaluate(new_position)
 
+                # Actualizar la mejor posición global del enjambre
                 if particle.best_value < self.global_best_value:
                     self.global_best_value = particle.best_value
                     self.global_best_position = np.copy(particle.best_position)
 
-    def evaluate(position):
+    def evaluate(self, position):
+        # Coeficientes de la función objetivo
         C1 = 1.715
         C2 = 0.035
         C3 = 4.0565
-        C5 = 3000.0
         C4 = 10.000
+        C5 = 3000.0
         C6 = 0.063
         x1, x2, x3, x4, x5, x6, x7 = position
+        # Evaluar la función objetivo
         return C1*x1 + C2*x1*x6 + C3*x3 + C4*x2 + C5 - C6*x3*x5
-
 
     def apply_DEB_constraints(self, particle):
         # Restricciones basadas en las reglas DEB
@@ -45,14 +57,14 @@ class Swarm:
         
         # Aplicar las reglas DEB para seleccionar las soluciones válidas
         for i in range(len(self.bounds)):
-             if SVR > 0:
-                if self.bounds[i, 0] <= particle.position[i] <= self.bounds[i, 1]:
-                     return
+            if self.bounds[i, 0] <= particle.position[i] <= self.bounds[i, 1]:
+                # La posición está dentro de los límites, aplicar regla b)
+                return
         # Si ninguna posición es válida, aplicar regla c)
-        if SVR < particle.best_value:
+        if SVR < particle.best_value:  # Comparar con la mejor posición local
             particle.best_value = SVR
             particle.best_position = np.copy(particle.position)
-        if SVR < self.global_best_value:
+        if SVR < self.global_best_value:  # Comparar con la mejor posición global
             self.global_best_value = SVR
             self.global_best_position = np.copy(particle.position)
 

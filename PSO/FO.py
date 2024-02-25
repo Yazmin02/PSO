@@ -1,5 +1,5 @@
 import numpy as np
-from enjambre import Swarm
+from enjambre import enjambre
 
 class PSO:
     def __init__(self, num_particles, num_dimensions, bounds, max_iterations, inertia, c1, c2):
