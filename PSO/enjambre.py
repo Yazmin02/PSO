@@ -1,54 +1,41 @@
-import numpy as np  # Importa la librería NumPy para operaciones numéricas eficientes
-from particula import Particle  # Importa la clase Particle del módulo particula
+import numpy as np
+from particula import Particle
 
 class Swarm:
     def __init__(self, num_particles, num_dimensions, bounds):
-        # Inicializar las partículas del enjambre con posiciones aleatorias dentro de los límites
         self.particles = [Particle(num_dimensions, bounds) for _ in range(num_particles)]
-        # Almacenar los límites del espacio de búsqueda
         self.bounds = bounds
-        # Inicializar la mejor posición global como un arreglo de ceros
         self.global_best_position = np.zeros(num_dimensions)
-        # Inicializar el mejor valor global como infinito
         self.global_best_value = float('inf')
 
-    def update_particles(self, inertia, c1, c2, rand1, rand2):
-        # Iterar sobre cada partícula en el enjambre
+    def update_particles(self, inertia, c1, c2, rand1, rand2, dt=1.0):
         for particle in self.particles:
-            if particle.best_position is not None and particle.position is not None:  # Verificar que las posiciones sean válidas
-                # Actualizar la velocidad de la partícula
+            if particle.best_position is not None and particle.position is not None:
                 new_velocity = (inertia * particle.velocity +
                                 c1 * rand1 * (particle.best_position - particle.position) +
                                 c2 * rand2 * (self.global_best_position - particle.position))
-                
-                # Actualizar la posición de la partícula
-                new_position = particle.position + new_velocity
-                # Ajustar la posición dentro de los límites del espacio de búsqueda
+                new_position = particle.position + dt * new_velocity
                 new_position = np.clip(new_position, self.bounds[:, 0], self.bounds[:, 1])
                 particle.position = new_position
 
-                # Actualizar la mejor posición local de la partícula
                 if self.evaluate(new_position) < particle.best_value:
                     particle.best_position = np.copy(new_position)
                     particle.best_value = self.evaluate(new_position)
 
-                # Actualizar la mejor posición global del enjambre
                 if particle.best_value < self.global_best_value:
                     self.global_best_value = particle.best_value
                     self.global_best_position = np.copy(particle.best_position)
 
-    def evaluate(self, position):
-        # Coeficientes de la función objetivo
+    def evaluate(position):
         C1 = 1.715
         C2 = 0.035
         C3 = 4.0565
-        C4 = 10.000
         C5 = 3000.0
+        C4 = 10.000
         C6 = 0.063
-        # Desempaquetar las variables de posición
         x1, x2, x3, x4, x5, x6, x7 = position
-        # Evaluar la función objetivo
         return C1*x1 + C2*x1*x6 + C3*x3 + C4*x2 + C5 - C6*x3*x5
+
 
     def apply_DEB_constraints(self, particle):
         # Restricciones basadas en las reglas DEB
@@ -58,14 +45,14 @@ class Swarm:
         
         # Aplicar las reglas DEB para seleccionar las soluciones válidas
         for i in range(len(self.bounds)):
-            if self.bounds[i, 0] <= particle.position[i] <= self.bounds[i, 1]:
-                # La posición está dentro de los límites, aplicar regla b)
-                return
+             if SVR > 0:
+                if self.bounds[i, 0] <= particle.position[i] <= self.bounds[i, 1]:
+                     return
         # Si ninguna posición es válida, aplicar regla c)
-        if SVR < particle.best_value:  # Comparar con la mejor posición local
+        if SVR < particle.best_value:
             particle.best_value = SVR
             particle.best_position = np.copy(particle.position)
-        if SVR < self.global_best_value:  # Comparar con la mejor posición global
+        if SVR < self.global_best_value:
             self.global_best_value = SVR
             self.global_best_position = np.copy(particle.position)
 
@@ -111,17 +98,19 @@ class Swarm:
         C43 = 1.0
         C44 = 1.0
         # Restricciones del tipo: Cx <= d
-        SVR += max(0, C7 * particle.position[5]**2 + C8 * particle.position[-1] * particle.position[2] - C9 * particle.position[5] - 1)
-        SVR += max(0, C10 * particle.position[0] * particle.position[2]**(-1) + C11 * particle.position[2]**(-1) * particle.position[5] - C12 * particle.position[0] * particle.position[2]**(-1) * particle.position[5]**2 - 1)
+        SVR += max(0, C7 * particle.position[5]**2 + C8 * particle.position[0] **(-1)* particle.position[2] - C9 * particle.position[5] - 1)
+        SVR += max(0, C10 * particle.position[0] * particle.position[2]**(-1) + C11 * particle.position[0] * particle.position[2]**(-1)* particle.position[5] - C12 * particle.position[0] * particle.position[2]**(-1) * particle.position[5]**2 - 1)
         SVR += max(0, C13 * particle.position[5]**2 + C14 * particle.position[4] - C15 * particle.position[3] - C16 * particle.position[5] - 1)
         SVR += max(0, C17 * particle.position[4]**(-1) + C18 * particle.position[4]**(-1) * particle.position[5] + C19 * particle.position[3] * particle.position[4]**(-1) - C20 * particle.position[4]**(-1) * particle.position[5]**2 - 1)
         SVR += max(0, C21 * particle.position[6] + C22 * particle.position[1] * particle.position[2]**(-1) * particle.position[3]**(-1) - C23 * particle.position[1] * particle.position[2]**(-1) - 1)
         SVR += max(0, C24 * particle.position[6]**(-1) + C25 * particle.position[1] * particle.position[2]**(-1) * particle.position[6]**(-1) - C26 * particle.position[1] * particle.position[2]**(-1) * particle.position[3]**(-1) * particle.position[6]**(-1) - 1)
-        SVR += max(0, C27 * particle.position[4]**(-1) + C28 * particle.position[4]**(-1) * particle.position[6] - C29 * particle.position[6] - 1)
-        SVR += max(0, C30 * particle.position[4] - C31 * particle.position[6] - 1)
-        SVR += max(0, C32 * particle.position[2] - C33 * particle.position[1] - 1)
-        SVR += max(0, C34 * particle.position[0] * particle.position[2]**(-1) + C35 * particle.position[2]**(-1) - 1)
-        SVR += max(0, C36 * particle.position[1] * particle.position[2]**(-1) * particle.position[3]**(-1) - C37 * particle.position[1] * particle.position[2]**(-1) - 1)
-        SVR += max(0, C38 * particle.position[3] + C39 * particle.position[1] - C40 * particle.position[2] - 1)
-        SVR += max(0, C41 * particle.position[0] * particle.position[5] + C42 * particle.position[0] - C43 * particle.position[2] - 1)
+        SVR += max(0, C27 * particle.position[4]**(-1) + C28 * particle.position[4]**(-1) * particle.position[6] -1)
+        SVR += max(0, C29 * particle.position[4] - C30 * particle.position[6] - 1)
+        SVR += max(0, C31 * particle.position[2] - C32 * particle.position[0] - 1)
+        SVR += max(0, C33 * particle.position[0] * particle.position[2]**(-1) + C34 * particle.position[2]**(-1) - 1)
+        SVR += max(0, C35 * particle.position[1] * particle.position[2]**(-1) * particle.position[3]**(-1) - C36 * particle.position[1] * particle.position[2]**(-1) - 1)
+        SVR += max(0, C37 * particle.position[3] + C38 * particle.position[1]**(-1) -1)
+        SVR += max(0, C39 * particle.position[0] * particle.position[5] + C40 * particle.position[0] - C41 * particle.position[2] - 1)
+        SVR += max(0, C42 * particle.position[0]**(-1) * particle.position[2] + C43 * particle.position[0]**(-1) - C44 * particle.position[5] - 1)
+
         return SVR

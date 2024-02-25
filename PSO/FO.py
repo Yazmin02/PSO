@@ -8,7 +8,7 @@ class PSO:
         self.inertia = inertia
         self.c1 = c1
         self.c2 = c2
-        self.global_best_position = np.zeros(num_dimensions)
+        self.global_best_position = None
         self.global_best_value = float('inf')
 
     def update_global_best(self):
