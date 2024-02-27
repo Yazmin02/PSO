@@ -1,10 +1,10 @@
 import numpy as np  
-from enjambre import enjambre  
+from enjambre import Enjambre  
 
 class PSO:
     def __init__(self, num_particles, num_dimensions, bounds, max_iterations, inertia, c1, c2):
         # Inicialización de la instancia de PSO con parámetros dados
-        self.swarm = enjambre(num_particles, num_dimensions, bounds)  # Inicializa el enjambre
+        self.swarm = Enjambre(num_particles, num_dimensions, bounds)  # Inicializa el enjambre
         self.max_iterations = max_iterations  # Número máximo de iteraciones
         self.inertia = inertia  # Factor de inercia
         self.c1 = c1  # Factor cognitivo
@@ -26,9 +26,9 @@ class PSO:
             rand2 = np.random.rand()
             self.swarm.update_particles(self.inertia, self.c1, self.c2, rand1, rand2)
             
-            # Aplicar restricciones DEB después de la actualización de las partículas
-            for particle in self.swarm.particles:
-                self.swarm.apply_DEB_constraints(particle)
+        # Aplicar restricciones DEB después de la actualización de todas las partículas
+        self.swarm.apply_DEB_constraints(self.swarm.particles)
 
         return self.global_best_position, self.global_best_value
+
 
