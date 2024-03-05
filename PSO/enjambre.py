@@ -23,7 +23,7 @@ class Enjambre:
 
                 new_position = particle.position + new_velocity
 
-                print("Velocidad de la partícula:", new_velocity)
+                #print("Velocidad de la partícula:", new_velocity)
                 #print("Nueva posición de la partícula:", new_position)
                 for i in range(len(self.bounds)):
                     if new_position[i] < self.bounds[i, 0]:
@@ -52,8 +52,6 @@ class Enjambre:
                 print("Valor de la función objetivo:", objective_value)
 
     def evaluate(self, position):
-        # Imprimir las posiciones antes de la evaluación
-        print("Posiciones evaluadas:", position)
         # Coeficientes de la función objetivo
         C1 = 1.715
         C2 = 0.035
@@ -61,11 +59,33 @@ class Enjambre:
         C4 = 10.000
         C5 = 3000.0
         C6 = 0.063
+        
         # Desempaquetar las posiciones
         x1, x2, x3, x4, x5, x6, x7 = position
         
-        # Evaluar la función objetivo
-        return C1*x1 + C2*x1*x6 + C3*x3 + C4*x2 + C5 - C6*x3*x5
+        # Calcular cada término de la función objetivo
+        term1 = C1 * x1
+        term2 = C2 * x1 * x6
+        term3 = C3 * x3
+        term4 = C4 * x2
+        term5 = C5
+        term6 = C6 * x3 * x5
+        
+        # Imprimir cada término individualmente
+        print("Término 1:", term1)
+        print("Término 2:", term2)
+        print("Término 3:", term3)
+        print("Término 4:", term4)
+        print("Término 5:", term5)
+        print("Término 6:", term6)
+        
+        # Sumar los términos para obtener el valor final de la función objetivo
+        result = term1 + term2 + term3 + term4 + term5 - term6
+        print("Resultado final de la evaluación:", result)
+        
+        # Retornar el valor final de la función objetivo
+        return result
+
  
     def apply_DEB_constraints(self, particle):
         best_particle = None
