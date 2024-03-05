@@ -11,4 +11,12 @@ class Particle:  # Definir una clase llamada Particle para representar una part�
         # Inicializar el mejor valor (la mejor solución encontrada) de la partícula como infinito
         self.best_value = float('inf')
 
+        # Imprimir la posición inicial de la partícula
+        print("Posición inicial de la partícula:", self.position)
+        # Imprimir la velocidad inicial de la partícula
+        print("Velocidad inicial de la partícula:", self.velocity)
+        # Imprimir la mejor posición inicial de la partícula
+        print("Mejor posición inicial de la partícula:", self.best_position)
+        # Imprimir el mejor valor inicial de la partícula
+        print("Mejor valor inicial de la partícula:", self.best_value)
 

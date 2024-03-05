@@ -20,61 +20,57 @@ def apply_DEB_constraints(self, particle):
     def calculate_SVR(self, particle):
         # Calcular la suma de violación de restricciones (SVR)
         SVR = 0
-        C1 = 1
-        C2 = 2
-        C3 = 3
-        C4 = 4
-        C5 = 5
-        C6 = 6
-        C7 = 7
-        C8 = 8
-        C9 = 9
-        C10 = 10
-        C11 = 11
-        C12 = 12
-        C13 = 13
-        C14 = 14
-        C15 = 15
-        C16 = 16
-        C17 = 17
-        C18 = 18
-        C19 = 19
-        C20 = 20
-        C21 = 21
-        C22 = 22
-        C23 = 23
-        C24 = 24
-        C25 = 25
-        C26 = 26
-        C27 = 27
-        C28 = 28
-        C29 = 29
-        C30 = 30
-        C31 = 31
-        C32 = 32
-        C33 = 33
-        C34 = 34
-        C35 = 35
-        C36 = 36
-        C37 = 37
-        C38 = 38
-        C39 = 39
-        C40 = 40
-        C41 = 41
-        C42 = 42
-        C43 = 43
+       
         # Restricciones del tipo: Cx <= d
-        SVR += max(0, C7 * particle.position[5]**2 + C8 * particle.position[-1] * particle.position[2] - C9 * particle.position[5] - 1)
-        SVR += max(0, C10 * particle.position[0] * particle.position[2]**(-1) + C11 * particle.position[2]**(-1) * particle.position[5] - C12 * particle.position[0] * particle.position[2]**(-1) * particle.position[5]**2 - 1)
-        SVR += max(0, C13 * particle.position[5]**2 + C14 * particle.position[4] - C15 * particle.position[3] - C16 * particle.position[5] - 1)
-        SVR += max(0, C17 * particle.position[4]**(-1) + C18 * particle.position[4]**(-1) * particle.position[5] + C19 * particle.position[3] * particle.position[4]**(-1) - C20 * particle.position[4]**(-1) * particle.position[5]**2 - 1)
-        SVR += max(0, C21 * particle.position[6] + C22 * particle.position[1] * particle.position[2]**(-1) * particle.position[3]**(-1) - C23 * particle.position[1] * particle.position[2]**(-1) - 1)
-        SVR += max(0, C24 * particle.position[6]**(-1) + C25 * particle.position[1] * particle.position[2]**(-1) * particle.position[6]**(-1) - C26 * particle.position[1] * particle.position[2]**(-1) * particle.position[3]**(-1) * particle.position[6]**(-1) - 1)
-        SVR += max(0, C27 * particle.position[4]**(-1) + C28 * particle.position[4]**(-1) * particle.position[6] - C29 * particle.position[6] - 1)
+        SVR += max(0, C7 * particle.position[5]^2 + C8 * particle.position[-1] * particle.position[2] - C9 * particle.position[5] - 1)
+        SVR += max(0, C10 * particle.position[0] * particle.position[2]^(-1) + C11 * particle.position[2]^(-1) * particle.position[5] - C12 * particle.position[0] * particle.position[2]^(-1) * particle.position[5]^2 - 1)
+        SVR += max(0, C13 * particle.position[5]^2 + C14 * particle.position[4] - C15 * particle.position[3] - C16 * particle.position[5] - 1)
+        SVR += max(0, C17 * particle.position[4]^(-1) + C18 * particle.position[4]^(-1) * particle.position[5] + C19 * particle.position[3] * particle.position[4]^(-1) - C20 * particle.position[4]^(-1) * particle.position[5]^2 - 1)
+        SVR += max(0, C21 * particle.position[6] + C22 * particle.position[1] * particle.position[2]^(-1) * particle.position[3]^(-1) - C23 * particle.position[1] * particle.position[2]^(-1) - 1)
+        SVR += max(0, C24 * particle.position[6]^(-1) + C25 * particle.position[1] * particle.position[2]^(-1) * particle.position[6]^(-1) - C26 * particle.position[1] * particle.position[2]^(-1) * particle.position[3]^(-1) * particle.position[6]^(-1) - 1)
+        SVR += max(0, C27 * particle.position[4]^(-1) + C28 * particle.position[4]^(-1) * particle.position[6] - C29 * particle.position[6] - 1)
         SVR += max(0, C30 * particle.position[4] - C31 * particle.position[6] - 1)
         SVR += max(0, C32 * particle.position[2] - C33 * particle.position[1] - 1)
-        SVR += max(0, C34 * particle.position[0] * particle.position[2]**(-1) + C35 * particle.position[2]**(-1) - 1)
-        SVR += max(0, C36 * particle.position[1] * particle.position[2]**(-1) * particle.position[3]**(-1) - C37 * particle.position[1] * particle.position[2]**(-1) - 1)
+        SVR += max(0, C34 * particle.position[0] * particle.position[2]^(-1) + C35 * particle.position[2]^(-1) - 1)
+        SVR += max(0, C36 * particle.position[1] * particle.position[2]^(-1) * particle.position[3]^(-1) - C37 * particle.position[1] * particle.position[2]^(-1) - 1)
         SVR += max(0, C38 * particle.position[3] + C39 * particle.position[1] - C40 * particle.position[2] - 1)
         SVR += max(0, C41 * particle.position[0] * particle.position[5] + C42 * particle.position[0] - C43 * particle.position[2] - 1)
         return SVR
+
+
+
+        constraints = [
+            C7 * particle.position[5]^2 + C8 * particle.position[0]^(-1) * particle.position[2] - C9 * particle.position[5] - 1 >= 0,
+            C10 * particle.position[0] * particle.position[2]^(-1) + C11 * particle.position[0] * particle.position[2]^(-1) * particle.position[5] - C12 * particle.position[0] * particle.position[2]^(-1) * particle.position[5]^2 - 1 >= 0,
+            C13 * particle.position[5]^2 + C14 * particle.position[4] - C15 * particle.position[3] - C16 * particle.position[5] - 1 >= 0,
+            C17 * particle.position[4]^(-1) + C18 * particle.position[4]^(-1) * particle.position[5] + C19 * particle.position[3] * particle.position[4]^(-1) - C20 * particle.position[4]^(-1) * particle.position[5]^2 - 1 >= 0,
+            C21 * particle.position[6] + C22 * particle.position[1] * particle.position[2]^(-1) * particle.position[3]^(-1) - C23 * particle.position[1] * particle.position[2]^(-1) - 1 >= 0,
+            C24 * particle.position[6]^(-1) + C25 * particle.position[1] * particle.position[2]^(-1) * particle.position[6]^(-1) - C26 * particle.position[1] * particle.position[2]^(-1) * particle.position[3]^(-1) * particle.position[6]^(-1) - 1 >= 0,
+            C27 * particle.position[4]^(-1) + C28 * particle.position[4]^(-1) * particle.position[6] - 1 >= 0,
+            C29 * particle.position[4] - C30 * particle.position[6] - 1 >= 0,
+            C31 * particle.position[2] - C32 * particle.position[0] - 1 >= 0,
+            C33 * particle.position[0] * particle.position[2]^(-1) + C34 * particle.position[2]^(-1) - 1 >= 0,
+            C35 * particle.position[1] * particle.position[2]^(-1) * particle.position[3]^(-1) - C36 * particle.position[1] * particle.position[2]^(-1) - 1 >= 0,
+            C37 * particle.position[3] + C38 * particle.position[1]^(-1) - 1 >= 0,
+            C39 * particle.position[0] * particle.position[5] + C40 * particle.position[0] - C41 * particle.position[2] - 1 >= 0,
+            C42 * particle.position[0]^(-1) * particle.position[2] + C43 * particle.position[0]^(-1) - C44 * particle.position[5] - 1 >= 0
+        ]
+
+
+
+        RESTRICCIONES 
+
+c7*x6^2 + c8*x1^-1*x3 - c9*x6<= 1
+c10*x1*x3^-1 + c11*x1*x3^-1*x6 - c12*x1*x3^-1*x6^2 <= 1
+c13*x6^2 + c14*x5 - c15*x4 - c16*x6 <= 1
+c17*x5^-1 + c18*x5^-1*x6 + c19*x4*x5^-1 - c20*x5^-2*x6^2 <= 1
+c21^x7 + c22*x2*x3^-1*x4^-1 - c23*x2*x3^-1 <= 1
+c24*x7^-1 + c25*x2*x3^-1*x7^-1 - c26*x2*x3^-1*x4^-1*x7^-1<= 1
+c27*x5^-1 + c28*x5^-1*x7 <= 1
+c29*x5 - c30*x7 <= 1
+c31*x3 - c32*x1 <= 1
+c33*x1*x3^-1 + c34*x3^-1 <= 1
+c35*x2*x3^-1*x4^-1 - c36*x2*x3^-1 <= 1
+c37*x4 + c38*x2^-1*x3*x4 <= 1
+c39*x1*x6 + c40*x1 - c41*x3 <= 1
+c42*x1^-1*x3 + c43*x1^-1 - c44*x6 <= 1

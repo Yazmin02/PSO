@@ -25,10 +25,10 @@ class PSO:
             rand1 = np.random.rand()
             rand2 = np.random.rand()
             self.swarm.update_particles(self.inertia, self.c1, self.c2, rand1, rand2)
-            
+
         # Aplicar restricciones DEB después de la actualización de todas las partículas
+        print("Aplicando restricciones DEB después de la actualización de todas las partículas...")
         self.swarm.apply_DEB_constraints(self.swarm.particles)
 
         return self.global_best_position, self.global_best_value
-
 
