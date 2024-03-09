@@ -1,17 +1,16 @@
 import copy
-import numpy as np  
-from enjambre import Enjambre  
+import numpy as np
+from enjambre import Enjambre
 
 class PSO:
-    def __init__(self, num_particles, num_dimensions, bounds, max_iterations, inertia, c1, c2):
-        # Inicialización de la instancia de PSO con parámetros dados
-        self.swarm = Enjambre(num_particles, num_dimensions, bounds)  # Inicializa el enjambre
-        self.max_iterations = max_iterations  # Número máximo de iteraciones
-        self.inertia = inertia  # Factor de inercia
-        self.c1 = c1  # Factor cognitivo
-        self.c2 = c2  # Factor social
-        self.global_best_position = None  # Inicializa la mejor posición global como None
-        self.global_best_value = float('inf')  # Inicializa el mejor valor global como infinito positivo
+    def __init__(self, num_particles, num_dimensions, bounds_lower, bounds_upper, max_iterations, inertia, c1, c2):
+        self.swarm = Enjambre(num_particles, num_dimensions, bounds_lower, bounds_upper)
+        self.max_iterations = max_iterations
+        self.inertia = inertia
+        self.c1 = c1
+        self.c2 = c2
+        self.global_best_position = None
+        self.global_best_value = float('inf')
 
     def update_global_best(self):
         """
@@ -47,5 +46,3 @@ class PSO:
             self.swarm.apply_DEB_constraints(particle)
         # Devuelve la mejor posición global y su valor asociado
         return self.global_best_position, self.global_best_value
-
-

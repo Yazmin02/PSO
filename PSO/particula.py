@@ -2,9 +2,9 @@ import copy
 import numpy as np  # Importar la librería NumPy para operaciones numéricas eficientes
 
 class Particle:  # Definir una clase llamada Particle para representar una partícula en PSO
-    def __init__(self, num_dimensions, bounds):  # Método especial para inicializar una partícula
+    def __init__(self, num_dimensions, bounds_lower, bounds_upper): # Método especial para inicializar una partícula
         # Inicializar la posición de la partícula aleatoriamente dentro de los límites definidos
-        self.position = np.random.uniform(bounds[:, 0], bounds[:, 1], num_dimensions)
+        self.position = np.random.uniform(bounds_lower, bounds_upper, num_dimensions)
         # Inicializar la velocidad de la partícula como un arreglo de ceros
         self.velocity = np.zeros(num_dimensions)
         # Inicializar la mejor posición de la partícula como una copia de su posición actual

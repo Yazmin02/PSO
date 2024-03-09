@@ -3,10 +3,11 @@ import numpy as np
 from particula import Particle  # Importa la clase Particle desde el módulo particula
 
 class Enjambre:
-    def __init__(self, num_particles, num_dimensions, bounds):
+    def __init__(self, num_particles, num_dimensions, bounds_lower, bounds_upper):
         # Crea instancias de Particle y las almacena en la lista particles
-        self.particles = [Particle(num_dimensions, bounds) for _ in range(num_particles)]
-        self.bounds = bounds
+        self.particles = [Particle(num_dimensions, bounds_lower, bounds_upper) for _ in range(num_particles)]
+        self.bounds_lower = bounds_lower
+        self.bounds_upper = bounds_upper
         self.global_best_position = np.zeros(num_dimensions)
         self.global_best_value = float('inf')  # Inicializa con infinito para minimización
 
@@ -20,19 +21,23 @@ class Enjambre:
                             c1 * rand1 * (particle.best_position - particle.position) +
                             c2 * rand2 * (self.global_best_position - particle.position))
             new_position = particle.position + new_velocity
+
             # Ajusta la nueva posición si se sale de los límites de búsqueda
-            for i in range(len(self.bounds)):
-                if new_position[i] < self.bounds[i, 0]:
-                    new_position[i] = 2 * self.bounds[i, 0] - new_position[i]
-                if new_position[i] > self.bounds[i, 1]:
-                    new_position[i] = 2 * self.bounds[i, 1] - new_position[i]
+            for i in range(len(self.bounds_lower)):
+                if new_position[i] > self.bounds_upper[i]:
+                    new_position[i] = 2*self.bounds_upper[i]-new_position[i]  # Establecer la posición en el límite superior
+                if new_position[i] < self.bounds_lower[i]:
+                    new_position[i] = 2*self.bounds_lower[i]-new_position[i] # Establecer la posición en el límite inferior
+
             # Evalúa la nueva posición y actualiza las mejores posiciones individuales y globales
+        objective_value = self.evaluate(new_position)
         if self.evaluate(new_position) < particle.best_value:
                 particle.best_position = copy.deepcopy(new_position)
-                particle.best_value = self.evaluate(new_position)
+                particle.best_value = self.evaluate(new_position)            
         if particle.best_value < self.global_best_value:
                 self.global_best_value = particle.best_value
                 self.global_best_position = copy.deepcopy(particle.best_position)
+                
             # Evalúa la función objetivo para la nueva posición
         objective_value = self.evaluate(new_position)
         print("Valor de la función objetivo:", objective_value)
@@ -58,7 +63,7 @@ class Enjambre:
         result = term1 + term2 + term3 + term4 + term5 - term6        
         return result
 
-    def apply_DEB_constraints(self, target_particle):
+    def apply_DEB_constraints(self, particles):
         #Aplica las restricciones DEB (Dominance-based Sorting) a una partícula objetivo.
         best_particle = None
         best_SVR = float('inf')
@@ -82,6 +87,7 @@ class Enjambre:
         return best_particle
 
     def calculate_SVR(self, particle):
+
         SVR = 0
         # Coeficientes para las restricciones del tipo: Cx <= d (desigualdad)
         C7 = 0.59553571E-2
