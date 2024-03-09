@@ -1,5 +1,5 @@
 import numpy as np
-from FO import PSO
+from PSO import PSO
 
 # Ejemplo de uso:
 num_particles = 50
@@ -13,8 +13,8 @@ bounds = np.array([[1500, 2000],
                    [145, 162]])
 max_iterations = 100
 inertia =0.5
-c1 = 2.2
-c2 = 1.8
+c1 = 2.0
+c2 = 2.1
 pso = PSO(num_particles, num_dimensions, bounds, max_iterations, inertia, c1, c2)
 best_solution, best_value = pso.optimize()
 print("Mejor solución:", best_solution)

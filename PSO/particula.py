@@ -1,3 +1,4 @@
+import copy
 import numpy as np  # Importar la librería NumPy para operaciones numéricas eficientes
 
 class Particle:  # Definir una clase llamada Particle para representar una partícula en PSO
@@ -7,16 +8,7 @@ class Particle:  # Definir una clase llamada Particle para representar una part�
         # Inicializar la velocidad de la partícula como un arreglo de ceros
         self.velocity = np.zeros(num_dimensions)
         # Inicializar la mejor posición de la partícula como una copia de su posición actual
-        self.best_position = np.copy(self.position)
+        self.best_position = copy.deepcopy(self.position)
         # Inicializar el mejor valor (la mejor solución encontrada) de la partícula como infinito
         self.best_value = float('inf')
-
-        # Imprimir la posición inicial de la partícula
-        print("Posición inicial de la partícula:", self.position)
-        # Imprimir la velocidad inicial de la partícula
-        print("Velocidad inicial de la partícula:", self.velocity)
-        # Imprimir la mejor posición inicial de la partícula
-        print("Mejor posición inicial de la partícula:", self.best_position)
-        # Imprimir el mejor valor inicial de la partícula
-        print("Mejor valor inicial de la partícula:", self.best_value)
 
