@@ -1,43 +1,39 @@
 import copy
 import numpy as np
-from particula import Particle  
+from particula import Particle  # Importa la clase Particle desde el módulo particula
 
 class Enjambre:
     def __init__(self, num_particles, num_dimensions, bounds):
-        # Crear instancias de Particle y almacenarlas en la lista particles
+        # Crea instancias de Particle y las almacena en la lista particles
         self.particles = [Particle(num_dimensions, bounds) for _ in range(num_particles)]
         self.bounds = bounds
         self.global_best_position = np.zeros(num_dimensions)
-        self.global_best_value = float('inf')  # Inicializar con infinito para minimización
+        self.global_best_value = float('inf')  # Inicializa con infinito para minimización
 
     def update_particles(self, inertia, c1, c2, rand1, rand2):
         for particle in self.particles:
+            # Salta la iteración si alguna posición es None
             if particle.best_position is None or particle.position is None:
-                continue  # Saltar la iteración si alguna posición es None
+                continue  
+            # Calcula la nueva velocidad y posición de la partícula
             new_velocity = (inertia * particle.velocity +
                             c1 * rand1 * (particle.best_position - particle.position) +
                             c2 * rand2 * (self.global_best_position - particle.position))
             new_position = particle.position + new_velocity
-
+            # Ajusta la nueva posición si se sale de los límites de búsqueda
             for i in range(len(self.bounds)):
                 if new_position[i] < self.bounds[i, 0]:
                     new_position[i] = 2 * self.bounds[i, 0] - new_position[i]
                 if new_position[i] > self.bounds[i, 1]:
                     new_position[i] = 2 * self.bounds[i, 1] - new_position[i]
-            #print("Posición ajustada de la partícula:", new_position)
-
+            # Evalúa la nueva posición y actualiza las mejores posiciones individuales y globales
         if self.evaluate(new_position) < particle.best_value:
                 particle.best_position = copy.deepcopy(new_position)
                 particle.best_value = self.evaluate(new_position)
-
         if particle.best_value < self.global_best_value:
                 self.global_best_value = particle.best_value
                 self.global_best_position = copy.deepcopy(particle.best_position)
-
-        print("Mejor posición global:", self.global_best_position)
-        #print(particle.position)
-        print("Mejor valor global:", particle.best_value)
-            # Evaluar la función objetivo para la nueva posición
+            # Evalúa la función objetivo para la nueva posición
         objective_value = self.evaluate(new_position)
         print("Valor de la función objetivo:", objective_value)
 
@@ -49,41 +45,32 @@ class Enjambre:
         C4 = 10.000
         C5 = 3000.0
         C6 = 0.063
-        # Desempaquetar las posiciones
+        # Desempaqueta las posiciones
         x1, x2, x3, x4, x5, x6, x7 = position
-        # Calcular cada término de la función objetivo
+        # Calcula cada término de la función objetivo
         term1 = C1 * x1
         term2 = C2 * x1 * x6
         term3 = C3 * x3
         term4 = C4 * x2
         term5 = C5
-        term6 = C6 * x3 * x5
-        
-        # Imprimir cada término individualmente
-        
-        # Sumar los términos para obtener el valor final de la función objetivo
-        result = term1 + term2 + term3 + term4 + term5 - term6
-        print("Resultado final de la evaluación:", result)
-        
-        # Retornar el valor final de la función objetivo
+        term6 = C6 * x3 * x5        
+        # Suma los términos para obtener el valor final de la función objetivo
+        result = term1 + term2 + term3 + term4 + term5 - term6        
         return result
 
- 
-    def apply_DEB_constraints(self, particle):
+    def apply_DEB_constraints(self, target_particle):
+        #Aplica las restricciones DEB (Dominance-based Sorting) a una partícula objetivo.
         best_particle = None
         best_SVR = float('inf')
-
-        # Iterar sobre todas las partículas para encontrar la mejor según las reglas de Deb
+        # Itera sobre todas las partículas para encontrar la mejor según las reglas de Deb
         for current_particle in self.particles:
             SVR = self.calculate_SVR(current_particle)
             feasibility = "Factible" if SVR == 0 else "Infactible"
-            #print(f"Violaciones de la partícula ({feasibility}): {SVR}")
-
-            # Si la partícula actual es factible y tiene un mejor valor de la función objetivo, o si es factible y la mejor partícula es infactible, actualiza la mejor partícula
+            # Si la partícula actual es factible y tiene un mejor valor de la función objetivo, 
+            # o si es factible y la mejor partícula es infactible, actualiza la mejor partícula
             if SVR == 0 and (best_particle is None or current_particle.best_value < best_particle.best_value or best_SVR > 0):
                 best_particle = current_particle
                 best_SVR = SVR
-
         # Si no se encontró ninguna partícula factible, selecciona la que tenga la menor violación
         if best_particle is None:
             for current_particle in self.particles:
@@ -91,16 +78,12 @@ class Enjambre:
                 if SVR < best_SVR:
                     best_particle = current_particle
                     best_SVR = SVR
-
-        # Imprimir la mejor partícula seleccionada y su estado de factibilidad+-
         best_feasibility = "Factible" if best_SVR == 0 else "Infactible"
-        print(f"Mejor partícula seleccionada ({best_feasibility}): {best_SVR}")
-
         return best_particle
-
 
     def calculate_SVR(self, particle):
         SVR = 0
+        # Coeficientes para las restricciones del tipo: Cx <= d (desigualdad)
         C7 = 0.59553571E-2
         C8 = 0.88392857
         C9 = 0.11756250
@@ -158,3 +141,4 @@ class Enjambre:
             SVR += max(0, C42 * (particle.position[0]**-1) * particle.position[2] + C43 * (particle.position[0]**-1) - C44 * particle.position[5] - 1)
 
         return SVR
+
