@@ -26,9 +26,9 @@ class Enjambre:
 
         for i in range(len(self.bounds_lower)):
                 if new_position[i] > self.bounds_upper[i]:
-                    new_position[i] = 2*self.bounds_upper[i] - new_position[i]
+                    new_position[i] = 2 * self.bounds_upper[i] - new_position[i]
                 if new_position[i] < self.bounds_lower[i]:
-                    new_position[i] = 2*self.bounds_lower[i] - new_position[i]
+                    new_position[i] = 2 * self.bounds_lower[i] - new_position[i]
 
             # Verifica si la nueva posición cumple con las restricciones DEB
         if not self.constraint_handler.check_constraints(new_position):
@@ -37,6 +37,7 @@ class Enjambre:
             # Actualiza la posición y evalúa la función objetivo
         particle.position = new_position
         particle_value = self.evaluate(new_position)
+
             # Actualiza la mejor posición individual y global
         if particle_value < particle.best_value:
                 particle.best_position = copy.deepcopy(new_position)
@@ -44,7 +45,7 @@ class Enjambre:
         if particle.best_value < self.global_best_value:
                 self.global_best_value = particle.best_value
                 self.global_best_position = copy.deepcopy(particle.best_position)
-                print(particle_value)
+
 
 
     def evaluate(self, position):
@@ -65,5 +66,7 @@ class Enjambre:
         term5 = C5
         term6 = C6 * x3 * x5        
         # Suma los términos para obtener el valor final de la función objetivo
-        result = term1 + term2 + term3 + term4 + term5 - term6        
+        result = term1 + term2 + term3 + term4 + term5 - term6    
+        print("Valor de evaluación de la partícula:", result)
+    
         return result

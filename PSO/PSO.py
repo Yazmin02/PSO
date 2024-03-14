@@ -11,7 +11,7 @@ class PSO:
         self.c2 = c2
         self.global_best_position = None
         self.global_best_value = float('inf')
-        self.constraint_handler = ConstraintHandler()  # Instancia de ConstraintHandler
+        self.constraint_handler = ConstraintHandler(bounds_lower, bounds_upper)
 
     def update_global_best(self):
         """
@@ -50,4 +50,7 @@ class PSO:
                         self.global_best_value = particle.best_value
                         self.global_best_position = np.copy(particle.best_position)
         # Devuelve la mejor posición global y su valor asociado
+                        
+         # Después de completar todas las iteraciones, imprime el mejor valor de la función objetivo
+        print("Mejor valor de la función objetivo encontrado:", self.global_best_value)
         return self.global_best_position, self.global_best_value
