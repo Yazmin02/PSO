@@ -1,6 +1,6 @@
-import copy
 import numpy as np
 from enjambre import Enjambre
+from restricciones import ConstraintHandler
 
 class PSO:
     def __init__(self, num_particles, num_dimensions, bounds_lower, bounds_upper, max_iterations, inertia, c1, c2):
@@ -11,6 +11,7 @@ class PSO:
         self.c2 = c2
         self.global_best_position = None
         self.global_best_value = float('inf')
+        self.constraint_handler = ConstraintHandler()  # Instancia de ConstraintHandler
 
     def update_global_best(self):
         """
@@ -19,11 +20,9 @@ class PSO:
         si se encuentra una partícula con un valor objetivo mejor que el mejor valor global actual.
         """
         for particle in self.swarm.particles:
-            # Comprueba si la mejor posición de la partícula actual es mejor que la mejor global actual
             if particle.best_value < self.global_best_value:
-                # Actualiza la mejor posición global y su valor asociado
                 self.global_best_value = particle.best_value
-                self.global_best_position = copy.deepcopy(particle.best_position)
+                self.global_best_position = np.copy(particle.best_position)
 
     def optimize(self):
         """
@@ -41,8 +40,14 @@ class PSO:
             rand2 = np.random.rand()
             # Actualiza las partículas del enjambre
             self.swarm.update_particles(self.inertia, self.c1, self.c2, rand1, rand2)
-        # Aplica las restricciones DEB a cada partícula del enjambre
-        for particle in self.swarm.particles:
-            self.swarm.apply_DEB_constraints(particle)
+            # Aplica las restricciones DEB a cada partícula del enjambre
+            for particle in self.swarm.particles:
+                if not self.constraint_handler.check_constraints(particle.position):
+                    particle.position = self.constraint_handler.correct_position(particle.position)
+                    particle.best_position = np.copy(particle.position)
+                    particle.best_value = self.swarm.evaluate(particle.position)
+                    if particle.best_value < self.global_best_value:
+                        self.global_best_value = particle.best_value
+                        self.global_best_position = np.copy(particle.best_position)
         # Devuelve la mejor posición global y su valor asociado
         return self.global_best_position, self.global_best_value
