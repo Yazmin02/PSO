@@ -24,14 +24,14 @@ class Enjambre:
                             c2 * rand2 * (self.global_best_position - particle.position))
             new_position = particle.position + new_velocity
 
-        for i in range(len(self.bounds_lower)):
+            for i in range(len(self.bounds_lower)):
                 if new_position[i] > self.bounds_upper[i]:
                     new_position[i] = 2 * self.bounds_upper[i] - new_position[i]
                 if new_position[i] < self.bounds_lower[i]:
                     new_position[i] = 2 * self.bounds_lower[i] - new_position[i]
 
             # Verifica si la nueva posición cumple con las restricciones DEB
-        if not self.constraint_handler.check_constraints(new_position):
+            if not self.constraint_handler.check_constraints(new_position):
                 new_position = self.constraint_handler.correct_position(new_position)
 
             # Actualiza la posición y evalúa la función objetivo
@@ -56,17 +56,26 @@ class Enjambre:
         C4 = 10.000
         C5 = 3000.0
         C6 = 0.063
-        # Desempaqueta las posiciones
-        x1, x2, x3, x4, x5, x6, x7 = position
-        # Calcula cada término de la función objetivo
-        term1 = C1 * x1
-        term2 = C2 * x1 * x6
-        term3 = C3 * x3
-        term4 = C4 * x2
-        term5 = C5
-        term6 = C6 * x3 * x5        
-        # Suma los términos para obtener el valor final de la función objetivo
-        result = term1 + term2 + term3 + term4 + term5 - term6    
+        
+        # Inicializamos el resultado con un valor inferior a 1000 para que entre en el bucle
+        result = 0
+        
+        while result < 1000:
+            # Desempaqueta las posiciones
+            x1, x2, x3, x4, x5, x6, x7 = position
+            # Calcula cada término de la función objetivo
+            term1 = C1 * x1
+            term2 = C2 * x1 * x6
+            term3 = C3 * x3
+            term4 = C4 * x2
+            term5 = C5
+            term6 = C6 * x3 * x5        
+            # Suma los términos para obtener el valor final de la función objetivo
+            result = term1 + term2 + term3 + term4 + term5 - term6
+
+            # Si el resultado es menor que 1000, genera nuevas posiciones aleatorias
+            if result < 1000:
+                position = np.random.uniform(self.bounds_lower, self.bounds_upper, len(position))
+
         print("Valor de evaluación de la partícula:", result)
-    
         return result
