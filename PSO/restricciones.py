@@ -2,10 +2,11 @@ import numpy as np
 
 class ConstraintHandler:
     def __init__(self, bounds_lower, bounds_upper):
+        # Almacena los límites inferiores y superiores
         self.bounds_lower = bounds_lower
         self.bounds_upper = bounds_upper
 
-        # Define los coeficientes de las restricciones DEB aquí
+        # Define los coeficientes de las restricciones DEB
         self.coefficients = {
             7: 0.59553571E-2, 8: 0.88392857, 9: 0.11756250, 10: 1.10880000,
             11: 0.13035330, 12: 0.00660330, 13: 0.66173269E-3, 14: 0.17239878E-1,
@@ -45,7 +46,7 @@ class ConstraintHandler:
                     constraint9, constraint10, constraint11, constraint12,
                     constraint13, constraint14])
 
+    # Método para corregir la posición si no cumple con las restricciones
     def correct_position(self, position):
-        # Método de corrección de posición si no cumple con las restricciones
-        # Este es solo un ejemplo, puedes implementar un método de corrección más sofisticado según tus necesidades
+        # Recorta la posición a los límites inferiores y superiores definidos
         return np.clip(position, self.bounds_lower, self.bounds_upper)
